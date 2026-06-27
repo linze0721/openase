@@ -6,10 +6,10 @@
   import {
     createProjectDraft,
     parseProjectDraft,
-    projectStatusOptions,
     slugFromName,
     type ProjectCreationDraft,
   } from '$lib/features/catalog-creation/model'
+  import ProjectStatusCreateField from '$lib/features/catalog-creation/components/project-status-create-field.svelte'
   import {
     adapterIconPath,
     providerAvailabilityLabel,
@@ -152,23 +152,10 @@
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <div class="space-y-2">
-            <Label>
-              {i18nStore.t('catalog.project.dialog.labels.status')}
-            </Label>
-            <Select.Root
-              type="single"
-              value={draft.status}
-              onValueChange={(value) => updateField('status', value || 'Planned')}
-            >
-              <Select.Trigger class="w-full">{draft.status}</Select.Trigger>
-              <Select.Content>
-                {#each projectStatusOptions as status (status)}
-                  <Select.Item value={status}>{status}</Select.Item>
-                {/each}
-              </Select.Content>
-            </Select.Root>
-          </div>
+          <ProjectStatusCreateField
+            status={draft.status}
+            onStatusChange={(value) => updateField('status', value)}
+          />
 
           <div class="space-y-2">
             <Label>
