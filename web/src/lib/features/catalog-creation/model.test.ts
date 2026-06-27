@@ -1,10 +1,19 @@
 import { describe, expect, it } from 'vitest'
 
-import { createProjectDraft, parseProjectDraft } from './model'
+import {
+  createProjectDraft,
+  defaultCreateProjectStatus,
+  getCreateTimeProjectStatusOptions,
+  getProjectStatusDescription,
+  getProjectStatusLabelKey,
+  parseProjectDraft,
+  projectStatusSemanticMetadata,
+} from './model'
 
 describe('catalog creation model', () => {
   it('defaults new projects to the canonical Planned status', () => {
     expect(createProjectDraft().status).toBe('Planned')
+    expect(createProjectDraft().status).toBe(defaultCreateProjectStatus)
     expect(createProjectDraft().maxConcurrentAgents).toBe('')
   })
 
@@ -76,5 +85,19 @@ describe('catalog creation model', () => {
       ok: false,
       error: 'Max concurrent agents must be a positive integer.',
     })
+  })
+
+  it('exposes create-time status options without terminal edit-time states', () => {
+    expect(getCreateTimeProjectStatusOptions()).toEqual(['Backlog', 'Planned', 'In Progress'])
+    expect(projectStatusSemanticMetadata.Completed.editTimeOnly).toBe(true)
+    expect(projectStatusSemanticMetadata.Planned.editTimeOnly).toBe(false)
+  })
+
+  it('returns i18n keys for status labels and descriptions', () => {
+    expect(getProjectStatusLabelKey('Planned')).toBe('catalog.project.status.Planned.label')
+    expect(getProjectStatusDescription('In Progress')).toBe(
+      'catalog.project.status.In Progress.description',
+    )
+    expect(getProjectStatusDescription('not-a-status')).toBeNull()
   })
 })
