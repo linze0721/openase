@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { AgentProvider } from '$lib/api/contracts'
   import type { ProjectCreationDraft } from '$lib/features/catalog-creation/model'
-  import { projectStatusOptions } from '$lib/features/catalog-creation/model'
+  import ProjectStatusCreateField from '$lib/features/catalog-creation/components/project-status-create-field.svelte'
   import { adapterIconPath, providerAvailabilityLabel } from '$lib/features/providers'
   import { providerIsDispatchReady } from '$lib/features/providers'
   import { Button } from '$ui/button'
@@ -81,23 +81,10 @@
       </div>
 
       <div class="grid gap-4 md:grid-cols-2">
-        <div class="space-y-2">
-          <Label>
-            {i18nStore.t('catalog.project.dialog.labels.status')}
-          </Label>
-          <Select.Root
-            type="single"
-            value={draft.status}
-            onValueChange={(value) => onFieldChange?.('status', value || 'Planned')}
-          >
-            <Select.Trigger class="w-full">{draft.status}</Select.Trigger>
-            <Select.Content>
-              {#each projectStatusOptions as status (status)}
-                <Select.Item value={status}>{status}</Select.Item>
-              {/each}
-            </Select.Content>
-          </Select.Root>
-        </div>
+        <ProjectStatusCreateField
+          status={draft.status}
+          onStatusChange={(value) => onFieldChange?.('status', value)}
+        />
 
         <div class="space-y-2">
           <Label>
